@@ -1,0 +1,17 @@
+# --- Core Framework ---
+fastapi
+
+# --- Database ---
+SQLAlchemy
+psycopg2-binary
+python-dotenv
+
+# --- Security / Auth ---
+python-jose[cryptography]
+passlib[bcrypt]
+
+# --- Utilities ---
+pydantic
+
+# --- Dev Tools (optional but recommended) ---
+uvicorn[standard]
