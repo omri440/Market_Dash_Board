@@ -12,6 +12,14 @@ passlib[bcrypt]
 
 # --- Utilities ---
 pydantic
+pydantic-settings
+
+# --- IBKR Integration ---
+ib_async
+
+# --- Task Queue ---
+arq
+redis
 
 # --- Dev Tools (optional but recommended) ---
 uvicorn[standard]

@@ -1,15 +1,35 @@
 # main.py - FastAPI Setup with CORS
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import auth, portfolio, scanner, journal, analytics  # Your auth router
 from backend.routers import broker
 
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for startup and shutdown events.
+    Replaces deprecated @app.on_event("startup") and @app.on_event("shutdown")
+    """
+    # Startup logic
+    print("🚀 Application starting up...")
+    # TODO: Initialize connection managers, load cache, etc.
+
+    yield  # Application runs here
+
+    # Shutdown logic
+    print("🛑 Application shutting down...")
+    # TODO: Close IBKR connections, cleanup resources, etc.
+
+
 app = FastAPI(
     title="Market Dashboard API",
     version="1.0.0",
-    description="Portfolio tracking API"
+    description="Portfolio tracking API",
+    lifespan=lifespan  # Register lifespan handler
 )
 
 # ============================================
