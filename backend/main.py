@@ -3,6 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import auth, portfolio, scanner, journal, analytics  # Your auth router
+from backend.routers import broker
+
 
 app = FastAPI(
     title="Market Dashboard API",
@@ -31,6 +33,7 @@ app.add_middleware(
 # Include Routers
 # ============================================
 app.include_router(auth.router)
+app.include_router(broker.router)
 # app.include_router(portfolio.router)
 # app.include_router(journal.router, prefix="/api")
 # app.include_router(scanner.router, prefix="/api")
@@ -40,6 +43,7 @@ app.include_router(auth.router)
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
 
 if __name__ == "__main__":
     import uvicorn
