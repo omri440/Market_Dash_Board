@@ -97,3 +97,66 @@ def get_broker_accounts(
     """Get all broker accounts for current user."""
     accounts = db.query(BrokerAccount).filter_by(user_id=user.id).all()
     return accounts
+
+
+@router.delete("/disconnect/{broker_account_id}")
+async def disconnect_broker(
+        broker_account_id: int,
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
+    """
+    Disconnect and delete a broker account.
+    Closes IBKR connection and deletes from database (cascades to related records).
+    """
+    broker_account = db.query(BrokerAccount).filter_by(
+        id=broker_account_id,
+        user_id=user.id
+    ).first()
+
+    if not broker_account:
+        raise HTTPException(status_code=404, detail="Broker account not found")
+
+    # Disconnect from IBKR
+    await connection_manager.disconnect(broker_account_id)
+
+    # Delete from database (cascade deletes related records)
+    db.delete(broker_account)
+    db.commit()
+
+    print(f"🗑️ Broker account {broker_account_id} deleted")
+    return {
+        "status": "disconnected",
+        "broker_account_id": broker_account_id,
+        "message": "Broker account disconnected and deleted"
+    }
+
+
+@router.get("/status/{broker_account_id}")
+async def get_connection_status(
+        broker_account_id: int,
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
+    """
+    Get connection status for a broker account.
+    Returns both database status and live connection status.
+    """
+    broker_account = db.query(BrokerAccount).filter_by(
+        id=broker_account_id,
+        user_id=user.id
+    ).first()
+
+    if not broker_account:
+        raise HTTPException(status_code=404, detail="Broker account not found")
+
+    # Get connection status from manager
+    status = connection_manager.get_connection_status(broker_account_id)
+
+    return {
+        "broker_account_id": broker_account_id,
+        "db_status": broker_account.status,
+        "connection_exists": status["exists"],
+        "connection_active": status["connected"],
+        "connected_at": broker_account.connected_at
+    }
