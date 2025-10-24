@@ -23,3 +23,10 @@ redis
 
 # --- Dev Tools (optional but recommended) ---
 uvicorn[standard]
+
+# --- Testing ---
+pytest
+pytest-asyncio
+pytest-mock
+pytest-cov
+httpx
