@@ -55,6 +55,22 @@ class IBKRConnectionManager:
                 ib.disconnect()
         self._connections.clear()
 
+    def get_connection_status(self, broker_account_id: int) -> dict:
+        """
+        Get connection status for a broker account.
+
+        Args:
+            broker_account_id: ID of the broker account
+
+        Returns:
+            dict: Status information {"connected": bool, "exists": bool}
+        """
+        if broker_account_id not in self._connections:
+            return {"exists": False, "connected": False}
+
+        ib = self._connections[broker_account_id]
+        return {"exists": True, "connected": ib.isConnected()}
+
 
 # Global singleton
 connection_manager = IBKRConnectionManager()
