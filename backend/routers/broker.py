@@ -57,6 +57,10 @@ async def connect_broker(
         db.commit()
         db.refresh(broker_account)
 
+        # 🔥 Trigger initial data sync in background
+        print(f"🔄 Triggering initial sync for broker account {broker_account.id}")
+        asyncio.create_task(sync_broker_data(broker_account.id, user.id))
+
         return broker_account
     except Exception as e:
         broker_account.status = "error"

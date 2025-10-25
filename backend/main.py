@@ -22,7 +22,8 @@ async def lifespan(app: FastAPI):
 
     # Shutdown logic
     print("🛑 Application shutting down...")
-    # TODO: Close IBKR connections, cleanup resources, etc.
+    from backend.services.ibkr_connection_manager import connection_manager
+    await connection_manager.disconnect_all()
 
 
 app = FastAPI(
@@ -54,7 +55,7 @@ app.add_middleware(
 # ============================================
 app.include_router(auth.router)
 app.include_router(broker.router)
-# app.include_router(portfolio.router)
+app.include_router(portfolio.router)
 # app.include_router(journal.router, prefix="/api")
 # app.include_router(scanner.router, prefix="/api")
 # app.include_router(analytics.router, prefix="/api")
