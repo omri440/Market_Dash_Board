@@ -36,7 +36,7 @@ async def test_get_or_create_connection_creates_new(connection_manager, mock_bro
         ib = await connection_manager.get_or_create_connection(mock_broker_account)
 
         assert ib is not None
-        mock_ib.connectAsync.assert_called_once_with("127.0.0.1", 7497, clientId=1)
+        mock_ib.connectAsync.assert_called_once_with("127.0.0.1", 7497, 1)
 
 
 @pytest.mark.asyncio
